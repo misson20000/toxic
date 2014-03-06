@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <libnotify/notify.h>
 
 #include "toxic_windows.h"
 #include "execute.h"
@@ -92,6 +93,14 @@ void kill_chat_window(ToxWindow *self)
     free(statusbar);
 }
 
+void notify(uint8_t *nick, uint8_t *msg) {
+  NotifyNotification *n;
+  n = notify_notification_new(nick, msg, "");
+  notify_notification_set_timeout(n, 3000);
+  GError *error = NULL;
+  notify_notification_show(n, &error);
+}
+
 static void chat_onMessage(ToxWindow *self, Tox *m, int num, uint8_t *msg, uint16_t len)
 {
     if (self->num != num)
@@ -117,6 +126,8 @@ static void chat_onMessage(ToxWindow *self, Tox *m, int num, uint8_t *msg, uint1
 
     write_to_log(msg, nick, ctx->log, false);
     alert_window(self, WINDOW_ALERT_1, true);
+    beep();
+    notify(nick, msg);
 }
 
 static void chat_onConnectionChange(ToxWindow *self, Tox *m, int num, uint8_t status)

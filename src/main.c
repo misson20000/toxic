@@ -464,6 +464,8 @@ int main(int argc, char *argv[])
 
     free(user_config_dir);
 
+    notify_init("Toxic");
+
     init_term();
     Tox *m = init_tox(f_use_ipv4);
 
